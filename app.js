@@ -1,5 +1,5 @@
 const API_KEY = 'e11d6a87ddbe4004a3bae96edc3dd591';
-const API_URL = 'https://api.aimlapi.com/v1/chat/completions';
+const API_URL = 'https://api.aimlapi.com/v1';
 
 // DOM Elements
 const userPrompt = document.getElementById('userPrompt');
@@ -43,18 +43,25 @@ copyBtn.addEventListener('click', async () => {
 // Generate code using AI
 async function generateCode(prompt) {
     try {
+        // Show loading state
+        generateBtn.disabled = true;
+        generateBtn.textContent = 'Generating...';
+        codeOutput.textContent = 'Generating code, please wait...';
+
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
+                'X-API-Key': API_KEY
             },
             body: JSON.stringify({
-                model: 'gpt-4o',
+                model: 'claude-3-sonnet',
+                temperature: 0.7,
+                max_tokens: 4000,
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a helpful AI coding assistant. Generate code based on the user\'s request. Include all necessary files and dependencies.'
+                        content: 'You are a helpful AI coding assistant. Generate code based on the user\'s request. Format your response with proper markdown code blocks using triple backticks and language identifiers. Include all necessary files and dependencies.'
                     },
                     {
                         role: 'user',
@@ -65,10 +72,15 @@ async function generateCode(prompt) {
         });
 
         if (!response.ok) {
-            throw new Error('API request failed');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `API request failed with status ${response.status}`);
         }
 
         const data = await response.json();
+        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+            throw new Error('Invalid response format from API');
+        }
+
         const generatedCode = data.choices[0].message.content;
         
         // Parse the response and extract files
@@ -80,24 +92,65 @@ async function generateCode(prompt) {
         
         // Enable download button
         downloadZip.disabled = false;
+        showToast('Code generated successfully!');
     } catch (error) {
         showToast('Error generating code: ' + error.message, 'error');
+        codeOutput.textContent = 'Error generating code. Please try again.';
+    } finally {
+        // Reset button state
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate Code';
     }
 }
 
 // Parse generated code to extract files
 function parseGeneratedCode(code) {
     const files = {};
-    // Basic parsing - you might want to enhance this based on the AI's output format
+    // Enhanced parsing to handle language-specific code blocks
     const fileMatches = code.match(/```[\w-]+\n[\s\S]+?```/g) || [];
     
     fileMatches.forEach(match => {
-        const fileName = match.match(/```([\w-]+)/)[1];
-        const content = match.replace(/```[\w-]+\n/, '').replace(/```$/, '');
-        files[fileName] = content;
+        const langMatch = match.match(/```([\w-]+)/);
+        if (!langMatch) return;
+        
+        const fileName = getFileNameFromLang(langMatch[1]);
+        const content = match.replace(/```[\w-]+\n/, '').replace(/```$/, '').trim();
+        
+        if (fileName && content) {
+            files[fileName] = content;
+        }
     });
     
     return files;
+}
+
+// Helper function to determine filename from language
+function getFileNameFromLang(lang) {
+    const langMap = {
+        'javascript': 'script.js',
+        'js': 'script.js',
+        'html': 'index.html',
+        'css': 'styles.css',
+        'python': 'script.py',
+        'java': 'Main.java',
+        'cpp': 'main.cpp',
+        'c': 'main.c',
+        'php': 'index.php',
+        'ruby': 'script.rb',
+        'go': 'main.go',
+        'rust': 'main.rs',
+        'typescript': 'script.ts',
+        'ts': 'script.ts',
+        'jsx': 'component.jsx',
+        'tsx': 'component.tsx',
+        'json': 'config.json',
+        'yaml': 'config.yaml',
+        'yml': 'config.yml',
+        'markdown': 'README.md',
+        'md': 'README.md'
+    };
+    
+    return langMap[lang.toLowerCase()] || `file.${lang}`;
 }
 
 // Generate ZIP file
