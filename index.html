@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Code Assistant</h1>
+            <p>Generate code and download project files with ease</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <textarea id="userPrompt" placeholder="Describe what you want to create..."></textarea>
+                <button id="generateBtn" class="primary-btn">Generate Code</button>
+            </div>
+
+            <div class="output-section">
+                <div class="code-container">
+                    <div class="code-header">
+                        <span>Generated Code</span>
+                        <button id="copyBtn" class="icon-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <pre><code id="codeOutput"></code></pre>
+                </div>
+                
+                <div class="actions">
+                    <button id="downloadZip" class="secondary-btn">
+                        <i class="fas fa-download"></i> Download as ZIP
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

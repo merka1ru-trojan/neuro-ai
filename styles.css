@@ -1,0 +1,160 @@
+:root {
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-color: #6c5ce7;
+    --accent-hover: #8075e9;
+    --error-color: #ff6b6b;
+    --success-color: #51cf66;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, var(--accent-color), #a29bfe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+header p {
+    color: var(--text-secondary);
+}
+
+.input-section {
+    margin-bottom: 2rem;
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 1rem;
+    background-color: var(--secondary-bg);
+    border: 1px solid #404040;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.primary-btn, .secondary-btn, .icon-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.primary-btn {
+    background-color: var(--accent-color);
+    color: white;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.primary-btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.secondary-btn {
+    background-color: var(--secondary-bg);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.secondary-btn:hover {
+    background-color: #3d3d3d;
+}
+
+.code-container {
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background-color: #363636;
+}
+
+.icon-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+}
+
+.icon-btn:hover {
+    color: var(--text-primary);
+}
+
+pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: 'Fira Code', monospace;
+    color: var(--text-primary);
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Toast notification styles */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    background-color: var(--success-color);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.toast.show {
+    opacity: 1;
+} 
