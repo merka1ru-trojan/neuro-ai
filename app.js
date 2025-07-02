@@ -1,5 +1,5 @@
 const API_KEY = 'e11d6a87ddbe4004a3bae96edc3dd591';
-const API_URL = 'https://api.aimlapi.com/v1';
+const API_URL = 'https://api.aimlapi.com/v1/chat/completions';
 
 // DOM Elements
 const userPrompt = document.getElementById('userPrompt');
@@ -52,12 +52,10 @@ async function generateCode(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': API_KEY
+                'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
                 model: 'claude-3-sonnet',
-                temperature: 0.7,
-                max_tokens: 4000,
                 messages: [
                     {
                         role: 'system',
@@ -67,13 +65,16 @@ async function generateCode(prompt) {
                         role: 'user',
                         content: prompt
                     }
-                ]
+                ],
+                stream: false,
+                max_tokens: 4000
             })
         });
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `API request failed with status ${response.status}`);
+            const errorMessage = errorData.error?.message || errorData.message || `API request failed with status ${response.status}`;
+            throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -94,6 +95,7 @@ async function generateCode(prompt) {
         downloadZip.disabled = false;
         showToast('Code generated successfully!');
     } catch (error) {
+        console.error('API Error:', error);
         showToast('Error generating code: ' + error.message, 'error');
         codeOutput.textContent = 'Error generating code. Please try again.';
     } finally {
